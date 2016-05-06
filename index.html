@@ -19,7 +19,7 @@
 
     <div>You are among the top
     <span id="groupsize">_</span> million out of
-    <span id="popsize"></span> million Americans.
+    <span id="popsize"></span> million American wage earners.
     </div>
 
     <br>
@@ -122,29 +122,13 @@ input{
 </style>
 
 <script src="./jquery.min.js"></script>
+<script src="./papaparse.min.js"></script>
 
 <script>
-// These represent the income percentile cutoffs
-var cutoffs = [
-    [2000, 100],
-    [5000, 90],
-    [40000, 70],
-    [50000, 50],
-    [80000, 20],
-    [200000, 1]
-];
-
-// This is the 0th index of the array, which is the income
-var INCOME_INDEX = 0;
-
-// This is the 1st index of the array, which is the percentile
-var PERCENT_INDEX = 1;
 
 // This it the target population, in millions
-var POPULATION = 300;
-
-// This is the starting income for the visualization
-var DEFAULT_INCOME = 50000;
+var POPULATION = 158.186;
+var TOTAL_POP = 318.9;
 
 // This is the number of working hours.
 var HOURS_PER_DAY = 8;
@@ -153,16 +137,24 @@ var WEEKS_PER_YEAR = 52;
 var WORKING_HOURS = HOURS_PER_DAY * DAYS_PER_WEEK * WEEKS_PER_YEAR;
 
 // Median income
-var MEDIAN_INCOME = 50000;
+var MEDIAN_INCOME = 28851;
+
+// This is the starting income for the visualization
+var DEFAULT_INCOME = MEDIAN_INCOME;
 
 // Poverty line
-var POVERTY_INCOME = 10000;
+var POVERTY_INCOME = 11770;
 
 // Elite line
 var ELITE_INCOME = 1000000;
 
 // Billion line
 var BILLION_INCOME = 1000000000;
+
+var MIN_INDEX = 4;
+var MAX_INDEX = 5;
+// This is the 1st index of the array, which is the percentile
+var PERCENT_INDEX = 3;
 
 // http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
 function to$(n){
@@ -183,8 +175,40 @@ function toMoney(n, short){
 }
 
 $(document).ready(function(){
+
+    var data = Papa.parse(
+        $("#datatable").html()
+    ).data;
+    console.log(data);
+
+    for(var i = 0; i < data.length; i++){
+        var cur = data[i];
+        console.log(cur);
+        var range = cur[0].replace(/,/g, '');
+        var splits = range.split("^");
+        console.log(splits);
+
+        var min = parseFloat(splits[0]);
+        var max = parseFloat(splits[1]);
+        console.log(min)
+        console.log(max);
+
+        cur.push(min);
+        cur.push(max);
+
+        var cleanPercent = parseFloat(cur[PERCENT_INDEX].replace('%', ''));
+        cleanPercent = cleanPercent.round(5);
+
+        cur[PERCENT_INDEX] = cleanPercent;
+
+        console.log(cur);
+
+    }
+
+
     // Set the population
     $("#popsize").text(POPULATION);
+    $("#totalpop").text(TOTAL_POP);
 
     // Set the default income
     $("#income").val(DEFAULT_INCOME);
@@ -198,13 +222,11 @@ $(document).ready(function(){
         // Default to 100 percent if less than all cutoffs.
         var percent = 100;
 
-        for(var i = 0; i < cutoffs.length; i++){
-            var cur = cutoffs[i];
-            console.log(i + " " + cur[0] + " " + cur[1]);
-            if(income >= cur[INCOME_INDEX]){
+        for(var i = 0; i < data.length; i++){
+            var cur = data[i];
+            console.log(i + " " + cur[MIN_INDEX] + " " + cur[MAX_INDEX] + " " + cur[PERCENT_INDEX]);
+            if(income >= cur[MIN_INDEX] && income <= cur[MAX_INDEX]){
                 percent = cur[PERCENT_INDEX];
-            }else{
-                break;
             }
         }
 
@@ -214,7 +236,7 @@ $(document).ready(function(){
 
         // Calculate and set the group size
         var groupsize = percent / 100.0 * POPULATION;
-        $("#groupsize").text(groupsize);
+        $("#groupsize").text(groupsize.round(5));
 
         // Format the progress bar
         $("#percentbar").css('width', percent + '%');
@@ -222,7 +244,8 @@ $(document).ready(function(){
         $("#percentbar2").css('width', (100 - percent) + '%');
 
         // Set the size of the rest of the population
-        $("#restsize").text(POPULATION - groupsize);
+        var rest = POPULATION - groupsize;
+        $("#restsize").text(rest.round(5));
 
         var hourlyRate = income / WORKING_HOURS;
         $("#hourly").text(toMoney(hourlyRate));
@@ -232,7 +255,7 @@ $(document).ready(function(){
         $("#medianrate").text(medianRate);
 
         var medianMultiple = income / MEDIAN_INCOME;
-        $("#medianmultiple").text(medianMultiple);
+        $("#medianmultiple").text(medianMultiple.toFixed(5));
 
         var hoursToMakeMedian = WORKING_HOURS / medianMultiple;
         var daysToMakeMedian = hoursToMakeMedian / HOURS_PER_DAY;
@@ -262,3 +285,63 @@ $(document).ready(function(){
 </script>
 
 
+
+<div id="datatable" style="display:none">"0.01 ^ 4,999.99",22574440,158186786,100.00%
+"5,000.00 ^ 9,999.99","13,848,841",135612346,85.7293%
+"10,000.00 ^ 14,999.99","12,329,270",121763505,76.9745%
+"15,000.00 ^ 19,999.99","11,505,776",109434235,69.1804%
+"20,000.00 ^ 24,999.99","10,918,555",97928459,61.9069%
+"25,000.00 ^ 29,999.99","10,192,863",87009904,55.0045%
+"30,000.00 ^ 34,999.99","9,487,840",76817041,48.5610%
+"35,000.00 ^ 39,999.99","8,578,215",67329201,42.5631%
+"40,000.00 ^ 44,999.99","7,553,972",58750986,37.1403%
+"45,000.00 ^ 49,999.99","6,542,882",51197014,32.3649%
+"50,000.00 ^ 54,999.99","5,723,269",44654132,28.2287%
+"55,000.00 ^ 59,999.99","4,846,517",38930863,24.6107%
+"60,000.00 ^ 64,999.99","4,201,232",34084346,21.5469%
+"65,000.00 ^ 69,999.99","3,573,471",29883114,18.8910%
+"70,000.00 ^ 74,999.99","3,094,739",26309643,16.6320%
+"75,000.00 ^ 79,999.99","2,684,481",23214904,14.6756%
+"80,000.00 ^ 84,999.99","2,297,338",20530423,12.9786%
+"85,000.00 ^ 89,999.99","1,975,400",18233085,11.5263%
+"90,000.00 ^ 94,999.99","1,714,370",16257685,10.2775%
+"95,000.00 ^ 99,999.99","1,486,636",14543315,9.1938%
+"100,000.00 ^ 104,999.99","1,309,068",13056679,8.2540%
+"105,000.00 ^ 109,999.99","1,117,128",11747611,7.4264%
+"110,000.00 ^ 114,999.99","977,055",10630483,6.7202%
+"115,000.00 ^ 119,999.99","865,889",9653428,6.1026%
+"120,000.00 ^ 124,999.99","773,339",8787539,5.5552%
+"125,000.00 ^ 129,999.99","673,971",8014200,5.0663%
+"130,000.00 ^ 134,999.99","595,827",7340229,4.6402%
+"135,000.00 ^ 139,999.99","527,341",6744402,4.2636%
+"140,000.00 ^ 144,999.99","466,992",6217061,3.9302%
+"145,000.00 ^ 149,999.99","419,003",5750069,3.6350%
+"150,000.00 ^ 154,999.99","384,581",5331066,3.3701%
+"155,000.00 ^ 159,999.99","335,391",4946485,3.1270%
+"160,000.00 ^ 164,999.99","296,048",4611094,2.9150%
+"165,000.00 ^ 169,999.99","265,309",4315046,2.7278%
+"170,000.00 ^ 174,999.99","239,515",4049737,2.5601%
+"175,000.00 ^ 179,999.99","216,255",3810222,2.4087%
+"180,000.00 ^ 184,999.99","200,592",3593967,2.2720%
+"185,000.00 ^ 189,999.99","179,005",3393375,2.1452%
+"190,000.00 ^ 194,999.99","165,277",3214370,2.0320%
+"195,000.00 ^ 199,999.99","154,070",3049093,1.9275%
+"200,000.00 ^ 249,999.99","1,039,897",2895023,1.8301%
+"250,000.00 ^ 299,999.99","565,105",1855126,1.1727%
+"300,000.00 ^ 349,999.99","333,584",1290021,0.8155%
+"350,000.00 ^ 399,999.99","219,923",956437,0.6046%
+"400,000.00 ^ 449,999.99","151,162",736514,0.4656%
+"450,000.00 ^ 499,999.99","108,881",585352,0.3700%
+"500,000.00 ^ 999,999.99","345,935",476471,0.3012%
+"1,000,000.00 ^ 1,499,999.99","65,548",130536,0.0825%
+"1,500,000.00 ^ 1,999,999.99","24,140",64988,0.0411%
+"2,000,000.00 ^ 2,499,999.99","12,137",40848,0.0258%
+"2,500,000.00 ^ 2,999,999.99","6,871",28711,0.0182%
+"3,000,000.00 ^ 3,499,999.99","4,799",21840,0.0138%
+"3,500,000.00 ^ 3,999,999.99","3,258",17041,0.0108%
+"4,000,000.00 ^ 4,499,999.99","2,353",13783,0.0087%
+"4,500,000.00 ^ 4,999,999.99","1,822",11430,0.0072%
+"5,000,000.00 ^ 9,999,999.99","6,468",9608,0.0061%
+"10,000,000.00 ^ 19,999,999.99","2,230",3140,0.0020%
+"20,000,000.00 ^ 49,999,999.99",776,910,0.0006%
+"50,000,000.00 and over",134,134,0.0001%</div>
