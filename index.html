@@ -1,52 +1,106 @@
 
 <body>
 
-Enter your annual income:
-<br>
-<input placeholder="Enter income" id="income" type="text" value=""></input>
+<div id="left">
 
-<div>You are the
-<span id="percentile">X</span>
-percent.</div>
+    Enter your annual income:
+    <br>
+    <input placeholder="Enter income" id="income" type="text" value=""></input>
 
-<br>
-<div>You are among the top
-<span id="groupsize">_</span> million out of
-<span id="popsize"></span> million Americans.
+    <div>You are the
+    <span id="percentile">X</span>
+    percent.</div>
+
 </div>
 
-<br>
-<div id="percentbox">
-    <div id="percentbar"></div>
+<div id="right">
+    <div>Ok, so say you make <span id="incomeText"></span>.</div>
+    <br>
+
+    <div>You are among the top
+    <span id="groupsize">_</span> million out of
+    <span id="popsize"></span> million Americans.
+    </div>
+
+    <br>
+    <div class="percentbox">
+        <div id="percentbar"></div>
+    </div>
+
+    <br>
+    <div>There are 
+    <span id="restsize">_</span> million people who make less than you.
+    </div>
+
+    <br>
+    <div class="percentbox">
+        <div id="percentbar2"></div>
+    </div>
+
+    <br>
+    <div>That is an hourly rate of $<span id="hourly"></span> per hour.
+    </div>
+    <br>
+    <div>The median income is <span id="median"></span> which is an hourly rate of
+    <span id="medianrate"></span>. Your income is <span id="medianmultiple"></span> times
+    the median. It would take you <span id="medianhours"></span> hours (<span id="mediandays"></span> work days
+    or <span id="medianyears"></span> years) to make the median annual income.</div>
+
+    <br>
+    <div>Try typing in <span id="poverty"></span>. That is the poverty line. That is an hourly
+    rate of <span id="povertyrate"></span> and is <span id="povertymultiple"></span> times
+    the median.</div>
+    <br>
+
+    <div>Try typing in <span id="elite"></span> (that's a million). That is the top.</div>
+
+    <br>
+    <div>Try typing in <span id="billion"></span> (that's a billion). That is the top.</div>
+
+    <div>I would like to provide some perspective and insight into the actual numbers around income inequality
+    and a way to visualize that. It is difficult to grasp the orders of magnitude.</div>
+
+    <br>
+    <div>This is the income distribution in the US.</div>
+
 </div>
-
-
-<br>
-<div>There are 
-<span id="restsize">_</span> million people who make less than you.
-</div>
-
 
 </body>
 
 <style>
 * {
     font-family: Helvetica;
-    font-size: 30px;
+
 }
 
 body{
-    width: 500px;
+    width: 750px;
     margin: auto;
-    margin-top: 200px;
+    margin-top: 100px;
+}
+
+#left{
+    float: left;
+    width: 400px;
+    font-size: 30px;
+}
+
+#right{
+    float: left;
+    width: 350px;
+    height: 100%;
+    overflow: scroll;
+    font-size: 20px;
 }
 
 input{
     padding: 3px;
     margin: 4px;
+    font-size: 30px;
+
 }
 
-#percentbox{
+.percentbox{
     width: 300px;
     height: 20px;
     border: 1px solid black;
@@ -56,6 +110,13 @@ input{
     width: 0%;
     height: 100%;
     background-color: black;
+}
+
+#percentbar2{
+    width: 0%;
+    height: 100%;
+    background-color: black;
+    float: right;
 }
 
 </style>
@@ -85,6 +146,24 @@ var POPULATION = 300;
 // This is the starting income for the visualization
 var DEFAULT_INCOME = 50000;
 
+// This is the number of working hours.
+var HOURS_PER_DAY = 8;
+var DAYS_PER_WEEK = 5;
+var WEEKS_PER_YEAR = 52;
+var WORKING_HOURS = HOURS_PER_DAY * DAYS_PER_WEEK * WEEKS_PER_YEAR;
+
+// Median income
+var MEDIAN_INCOME = 50000;
+
+// Poverty line
+var POVERTY_INCOME = 10000;
+
+// Elite line
+var ELITE_INCOME = 1000000;
+
+// Billion line
+var BILLION_INCOME = 1000000000;
+
 $(document).ready(function(){
     // Set the population
     $("#popsize").text(POPULATION);
@@ -92,15 +171,19 @@ $(document).ready(function(){
     // Set the default income
     $("#income").val(DEFAULT_INCOME);
 
-    function compute(amount){
-        console.log("calc" + amount);
+    function round(num){
+        return Math.floor(num * 100) / 100;
+    }
+
+    function compute(income){
+        console.log("calc" + income);
         // Default to 100 percent if less than all cutoffs.
         var percent = 100;
 
         for(var i = 0; i < cutoffs.length; i++){
             var cur = cutoffs[i];
             console.log(i + " " + cur[0] + " " + cur[1]);
-            if(amount >= cur[INCOME_INDEX]){
+            if(income >= cur[INCOME_INDEX]){
                 percent = cur[PERCENT_INDEX];
             }else{
                 break;
@@ -109,6 +192,7 @@ $(document).ready(function(){
 
         // Set the percentile text
         $("#percentile").text(percent);
+        $("#incomeText").text(income);
 
         // Calculate and set the group size
         var groupsize = percent / 100.0 * POPULATION;
@@ -117,8 +201,32 @@ $(document).ready(function(){
         // Format the progress bar
         $("#percentbar").css('width', percent + '%');
 
+        $("#percentbar2").css('width', (100 - percent) + '%');
+
         // Set the size of the rest of the population
         $("#restsize").text(POPULATION - groupsize);
+
+        var hourlyRate = round(income / WORKING_HOURS);
+        console.log(hourlyRate)
+        $("#hourly").text(hourlyRate);
+
+        $("#median").text(MEDIAN_INCOME);
+        var medianRate = round(MEDIAN_INCOME / WORKING_HOURS);
+        $("#medianrate").text(medianRate);
+
+        var medianMultiple = income / MEDIAN_INCOME;
+        $("#medianmultiple").text(medianMultiple);
+
+        var hoursToMakeMedian = WORKING_HOURS / medianMultiple;
+        var daysToMakeMedian = hoursToMakeMedian / HOURS_PER_DAY;
+        var yearsToMakeMedian = 1 / medianMultiple;
+        $("#medianhours").text(hoursToMakeMedian);
+        $("#mediandays").text(daysToMakeMedian);
+        $("#medianyears").text(yearsToMakeMedian);
+
+        $("#poverty").text(POVERTY_INCOME);
+        $("#elite").text(ELITE_INCOME);
+        $("#billion").text(BILLION_INCOME);
     }
 
     // When they enter a key, recalculate.
