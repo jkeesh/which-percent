@@ -1,0 +1,136 @@
+
+<body>
+
+Enter your annual income:
+<br>
+<input placeholder="Enter income" id="income" type="text" value=""></input>
+
+<div>You are the
+<span id="percentile">X</span>
+percent.</div>
+
+<br>
+<div>You are among the top
+<span id="groupsize">_</span> million out of
+<span id="popsize"></span> million Americans.
+</div>
+
+<br>
+<div id="percentbox">
+    <div id="percentbar"></div>
+</div>
+
+
+<br>
+<div>There are 
+<span id="restsize">_</span> million people who make less than you.
+</div>
+
+
+</body>
+
+<style>
+* {
+    font-family: Helvetica;
+    font-size: 30px;
+}
+
+body{
+    width: 500px;
+    margin: auto;
+    margin-top: 200px;
+}
+
+input{
+    padding: 3px;
+    margin: 4px;
+}
+
+#percentbox{
+    width: 300px;
+    height: 20px;
+    border: 1px solid black;
+}
+
+#percentbar{
+    width: 0%;
+    height: 100%;
+    background-color: black;
+}
+
+</style>
+
+<script src="./jquery.min.js"></script>
+
+<script>
+// These represent the income percentile cutoffs
+var cutoffs = [
+    [2000, 100],
+    [5000, 90],
+    [40000, 70],
+    [50000, 50],
+    [80000, 20],
+    [200000, 1]
+];
+
+// This is the 0th index of the array, which is the income
+var INCOME_INDEX = 0;
+
+// This is the 1st index of the array, which is the percentile
+var PERCENT_INDEX = 1;
+
+// This it the target population, in millions
+var POPULATION = 300;
+
+// This is the starting income for the visualization
+var DEFAULT_INCOME = 50000;
+
+$(document).ready(function(){
+    // Set the population
+    $("#popsize").text(POPULATION);
+
+    // Set the default income
+    $("#income").val(DEFAULT_INCOME);
+
+    function compute(amount){
+        console.log("calc" + amount);
+        // Default to 100 percent if less than all cutoffs.
+        var percent = 100;
+
+        for(var i = 0; i < cutoffs.length; i++){
+            var cur = cutoffs[i];
+            console.log(i + " " + cur[0] + " " + cur[1]);
+            if(amount >= cur[INCOME_INDEX]){
+                percent = cur[PERCENT_INDEX];
+            }else{
+                break;
+            }
+        }
+
+        // Set the percentile text
+        $("#percentile").text(percent);
+
+        // Calculate and set the group size
+        var groupsize = percent / 100.0 * POPULATION;
+        $("#groupsize").text(groupsize);
+
+        // Format the progress bar
+        $("#percentbar").css('width', percent + '%');
+
+        // Set the size of the rest of the population
+        $("#restsize").text(POPULATION - groupsize);
+    }
+
+    // When they enter a key, recalculate.
+    $("#income").keyup(function(e){
+        var amount = parseInt($(this).val()) || 0;
+        compute(amount);
+    });
+
+    // Calculate initially with the default values
+    compute(DEFAULT_INCOME);
+});
+
+</script>
+
+
