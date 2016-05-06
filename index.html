@@ -38,7 +38,7 @@
     </div>
 
     <br>
-    <div>That is an hourly rate of $<span id="hourly"></span> per hour.
+    <div>That is an hourly rate of <span id="hourly"></span> per hour.
     </div>
     <br>
     <div>The median income is <span id="median"></span> which is an hourly rate of
@@ -164,6 +164,24 @@ var ELITE_INCOME = 1000000;
 // Billion line
 var BILLION_INCOME = 1000000000;
 
+// http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+function to$(n){
+    return n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+}
+
+Number.prototype.round = function(places) {
+  return +(Math.round(this + "e+" + places)  + "e-" + places);
+}
+
+function toMoney(n, short){
+    var x = to$(n);
+    if(short){
+        return "$" + x.substring(0, x.length - 3);
+    }
+
+    return "$" + x;
+}
+
 $(document).ready(function(){
     // Set the population
     $("#popsize").text(POPULATION);
@@ -192,7 +210,7 @@ $(document).ready(function(){
 
         // Set the percentile text
         $("#percentile").text(percent);
-        $("#incomeText").text(income);
+        $("#incomeText").text(toMoney(income,true));
 
         // Calculate and set the group size
         var groupsize = percent / 100.0 * POPULATION;
@@ -206,12 +224,11 @@ $(document).ready(function(){
         // Set the size of the rest of the population
         $("#restsize").text(POPULATION - groupsize);
 
-        var hourlyRate = round(income / WORKING_HOURS);
-        console.log(hourlyRate)
-        $("#hourly").text(hourlyRate);
+        var hourlyRate = income / WORKING_HOURS;
+        $("#hourly").text(toMoney(hourlyRate));
 
-        $("#median").text(MEDIAN_INCOME);
-        var medianRate = round(MEDIAN_INCOME / WORKING_HOURS);
+        $("#median").text(toMoney(MEDIAN_INCOME, true));
+        var medianRate = toMoney(MEDIAN_INCOME / WORKING_HOURS);
         $("#medianrate").text(medianRate);
 
         var medianMultiple = income / MEDIAN_INCOME;
@@ -220,18 +237,21 @@ $(document).ready(function(){
         var hoursToMakeMedian = WORKING_HOURS / medianMultiple;
         var daysToMakeMedian = hoursToMakeMedian / HOURS_PER_DAY;
         var yearsToMakeMedian = 1 / medianMultiple;
-        $("#medianhours").text(hoursToMakeMedian);
-        $("#mediandays").text(daysToMakeMedian);
-        $("#medianyears").text(yearsToMakeMedian);
+        $("#medianhours").text(hoursToMakeMedian.round(4));
+        $("#mediandays").text(daysToMakeMedian.round(4));
+        $("#medianyears").text(yearsToMakeMedian.round(4));
 
-        $("#poverty").text(POVERTY_INCOME);
-        $("#elite").text(ELITE_INCOME);
-        $("#billion").text(BILLION_INCOME);
+        $("#poverty").text(toMoney(POVERTY_INCOME, true));
+        $("#elite").text(toMoney(ELITE_INCOME, true));
+        $("#billion").text(toMoney(BILLION_INCOME, true));
     }
 
     // When they enter a key, recalculate.
     $("#income").keyup(function(e){
-        var amount = parseInt($(this).val()) || 0;
+        var val = $(this).val();
+        val = val.replace(/,/g, '');
+
+        var amount = parseInt(val) || 0;
         compute(amount);
     });
 
