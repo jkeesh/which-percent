@@ -5,31 +5,23 @@
 
     <div id="left">
 
+        <div class="main">
         Enter your annual income:
         <br>
         <input placeholder="Enter income" id="income" type="text" value=""></input>
 
+        <br>
+        <div class="clear"></div>
         <div>You are the
         <span id="percentile">X</span>
         percent.</div>
-
-        <br>
-
-        <div id="myDiv7" class="graph" style="width: 450px; height: 400px;">
-            <!-- Plotly chart will be drawn inside this DIV -->
         </div>
-        <p class="normal">This is a graph of the actual income distribution in the US. This is split into 35,000 buckets of $100,000, which is what you need to get the full scale of the range. As you can see, the small sliver at 0 is 99.9999% of the US wage earners.</p>
 
+        <br><br><br>
 
-
-
-
-
-
-    </div>
-
-    <div id="right">
-        <div>Ok, so say you make <span id="incomeText"></span>.</div>
+        <div>
+        <h1>Ok, so say you make <span id="incomeText"></span>.</h1>
+        </div>
         <br>
 
         <div>You are among the top
@@ -52,12 +44,15 @@
             <div id="percentbar2"></div>
         </div>
 
-        <br>
+        <br><br>
         <div>That is an hourly rate of <span id="hourly"></span> per hour.
         </div>
         <br>
         <div>The median income is <span id="median"></span> which is an hourly rate of
-        <span id="medianrate"></span>. Your income is <span id="medianmultiple"></span> times
+        <span id="medianrate"></span>. 
+
+        <br><br>
+        Your income is <span id="medianmultiple"></span> times
         the median. It would take you <span id="medianhours"></span> hours (<span id="mediandays"></span> work days
         or <span id="medianyears"></span> years) to make the median annual income.</div>
 
@@ -75,6 +70,12 @@
 
         <br>
         <div>This is the income distribution in the US.</div>
+
+        <div id="myDiv7" class="graph" style="width: 450px; height: 400px;">
+            <!-- Plotly chart will be drawn inside this DIV -->
+        </div>
+        <p class="normal">This is a graph of the actual income distribution in the US. This is split into 35,000 buckets of $100,000, which is what you need to get the full scale of the range. As you can see, the small sliver at 0 is 99.9999% of the US wage earners.</p>
+
 
     </div>
 </div>
@@ -190,14 +191,19 @@ body{
     margin-top: 100px;
 }
 
+.main{
+    font-size: 38px;
+    padding-top: 23px;
+    padding-bottom: 23px;
+}
+
 .graph{
     border: 1px solid black;
 }
 
 #left{
     float: left;
-    width: 550px;
-    font-size: 30px;
+    width: 950px;
 }
 
 #right{
@@ -217,8 +223,7 @@ p.normal{
 input{
     padding: 3px;
     margin: 4px;
-    font-size: 30px;
-
+    font-size: 38px;
 }
 
 .percentbox{
