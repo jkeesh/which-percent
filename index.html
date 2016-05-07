@@ -18,8 +18,8 @@
     <br>
 
     <div>You are among the top
-    <span id="groupsize">_</span> million out of
-    <span id="popsize"></span> million American wage earners.
+    <span id="groupsize">_</span> out of
+    <span id="popsize"></span> American wage earners.
     </div>
 
     <br>
@@ -29,7 +29,7 @@
 
     <br>
     <div>There are 
-    <span id="restsize">_</span> million people who make less than you.
+    <span id="restsize">_</span> people who make less than you.
     </div>
 
     <br>
@@ -47,15 +47,13 @@
     or <span id="medianyears"></span> years) to make the median annual income.</div>
 
     <br>
-    <div>Try typing in <span id="poverty"></span>. That is the poverty line. That is an hourly
-    rate of <span id="povertyrate"></span> and is <span id="povertymultiple"></span> times
-    the median.</div>
+    <div>Try typing in <span id="poverty"></span>. That is the poverty line.
     <br>
 
-    <div>Try typing in <span id="elite"></span> (that's a million). That is the top.</div>
+    <div>Try typing in <span id="elite"></span> (that's a million).</div>
 
     <br>
-    <div>Try typing in <span id="billion"></span> (that's a billion). That is the top.</div>
+    <div>Try typing in <span id="billion"></span> (that's a billion).</div>
 
     <div>I would like to provide some perspective and insight into the actual numbers around income inequality
     and a way to visualize that. It is difficult to grasp the orders of magnitude.</div>
@@ -127,8 +125,7 @@ input{
 <script>
 
 // This it the target population, in millions
-var POPULATION = 158.186;
-var TOTAL_POP = 318.9;
+var POPULATION = 158186786;
 
 // This is the number of working hours.
 var HOURS_PER_DAY = 8;
@@ -155,6 +152,14 @@ var MIN_INDEX = 4;
 var MAX_INDEX = 5;
 // This is the 1st index of the array, which is the percentile
 var PERCENT_INDEX = 3;
+
+function english(n){
+    if(n > 1e6){
+        return (n / 1e6).toFixed(3) + " million ";
+    }
+    return parseInt(n.toFixed(0)).toLocaleString();
+}
+
 
 // http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
 function to$(n){
@@ -207,8 +212,7 @@ $(document).ready(function(){
 
 
     // Set the population
-    $("#popsize").text(POPULATION);
-    $("#totalpop").text(TOTAL_POP);
+    $("#popsize").text(english(POPULATION));
 
     // Set the default income
     $("#income").val(DEFAULT_INCOME);
@@ -220,7 +224,7 @@ $(document).ready(function(){
     function compute(income){
         console.log("calc" + income);
         // Default to 100 percent if less than all cutoffs.
-        var percent = 100;
+        var percent = 0.0001;
 
         for(var i = 0; i < data.length; i++){
             var cur = data[i];
@@ -236,7 +240,9 @@ $(document).ready(function(){
 
         // Calculate and set the group size
         var groupsize = percent / 100.0 * POPULATION;
-        $("#groupsize").text(groupsize.round(5));
+
+
+        $("#groupsize").text(english(groupsize));
 
         // Format the progress bar
         $("#percentbar").css('width', percent + '%');
@@ -244,8 +250,8 @@ $(document).ready(function(){
         $("#percentbar2").css('width', (100 - percent) + '%');
 
         // Set the size of the rest of the population
-        var rest = POPULATION - groupsize;
-        $("#restsize").text(rest.round(5));
+        var rest = english(POPULATION - groupsize);
+        $("#restsize").text(rest);
 
         var hourlyRate = income / WORKING_HOURS;
         $("#hourly").text(toMoney(hourlyRate));
