@@ -15,7 +15,10 @@
 
         <br>
 
-
+        <div id="myDiv7" class="graph" style="width: 450px; height: 400px;">
+            <!-- Plotly chart will be drawn inside this DIV -->
+        </div>
+        <p class="normal">This is a graph of the actual income distribution in the US. This is split into 35,000 buckets of $100,000, which is what you need to get the full scale of the range. As you can see, the small sliver at 0 is 99.9999% of the US wage earners.</p>
 
 
 
@@ -106,6 +109,11 @@
     <p class="normal">Each bar represents the people up with incomes in the $100k bucket range up to the current x-axis label. The last bucket is the number of people with incomes $500,000 and greater. 92% of the wage earners are $100k or less.</p>
 
     <div id="myDiv4" class="graph" style="width: 950px; height: 400px;">
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
+    <p class="normal">The one thin bar on the left is almost every single American. Each bar represents the people up with incomes in the $100k bucket range up to the current x-axis label. This is the full range and shows you how far away the elite are, which is usually not properly visualized in truncated data-sets. This also doesnt show the full range. This only goes until $50 million, and the graph should really be 20 times longer.</p>
+
+    <div id="myDiv6" class="graph" style="width: 950px; height: 400px;">
         <!-- Plotly chart will be drawn inside this DIV -->
     </div>
     <p class="normal">The one thin bar on the left is almost every single American. Each bar represents the people up with incomes in the $100k bucket range up to the current x-axis label. This is the full range and shows you how far away the elite are, which is usually not properly visualized in truncated data-sets. This also doesnt show the full range. This only goes until $50 million, and the graph should really be 20 times longer.</p>
@@ -304,4 +312,6 @@ input{
 "5,000,000.00 - 9,999,999.99","6,468",9608,0.0061%
 "10,000,000.00 - 19,999,999.99","2,230",3140,0.0020%
 "20,000,000.00 - 49,999,999.99",776,910,0.0006%
-"50,000,000.00 and over",134,134,0.0001%</div>
+"50,000,000.00 - 1,000,000,000.00",134,134,0.0001%
+"1,000,000,000.00 - 3,000,000,000.00",25,25,0.00001%
+"3,000,000,000.00 - 5,000,000,000.00",1,1,0.0000006%</div>

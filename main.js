@@ -151,7 +151,10 @@ $(document).ready(function(){
         graphY.push(cur[COUNTS_INDEX]);
 
         var cleanPercent = parseFloat(cur[PERCENT_INDEX].replace('%', ''));
-        cleanPercent = cleanPercent.round(5);
+
+        if(cleanPercent < 6e-6){
+            cleanPercent = "0.0000006";
+        }
 
         cur[PERCENT_INDEX] = cleanPercent;
 
@@ -172,13 +175,17 @@ $(document).ready(function(){
 
     function compute(income){
         // Default to 100 percent if less than all cutoffs.
-        var percent = 0.0001;
+        var percent = "0.0000006";
 
         for(var i = 0; i < data.length; i++){
             var cur = data[i];
             if(income >= cur[MIN_INDEX] && income <= cur[MAX_INDEX]){
                 percent = cur[PERCENT_INDEX];
             }
+        }
+
+        if(income == 0){
+            percent = 100;
         }
 
         // Set the percentile text
@@ -351,5 +358,57 @@ $(document).ready(function(){
     Plotly.newPlot('myDiv5', graph5, {
         title: 'US Income Distribution ($100k buckets)'
     });
+
+
+    // Including billionaires.
+
+    var x100_2 = [];
+    for(var i = 0; i < 35000; i++){
+        x100.push(i * 100000);
+    }
+
+    var y100_2 = [
+        145130107,
+        10161656,
+        1605002,
+        553507,
+        260043
+    ];
+
+    var start = y100.length;
+    for(var i = 0; i < 35000 - start; i++){
+        y100.push(0);
+    }
+
+    y100[10] = 345935;
+    y100[15] = 65548;
+    y100[20] = 24140;
+    y100[25] = 12137;
+    y100[30] = 6871;
+    y100[35] = 4799;
+    y100[40] = 3258;
+    y100[45] = 2353;
+    y100[50] = 1822;
+    y100[100] = 6468;
+    y100[200] = 2230;
+    y100[300] = 776; // This is a 30M range
+    y100[499] = 134;
+
+    y100[34999] = 25;
+
+    var graph6 = [{
+      x: x100, //graphObj_100k2.graphX,
+      y: y100, //graphObj_100k2.graphY,
+      type: 'bar'
+    }];
+
+    Plotly.newPlot('myDiv6', graph6, {
+        title: 'US Income Distribution ($100k buckets, full scale)'
+    });
+
+    Plotly.newPlot('myDiv7', graph6, {
+        title: 'US Income Distribution ($100k buckets, full scale)'
+    });
+
 
 });
