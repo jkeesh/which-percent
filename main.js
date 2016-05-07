@@ -173,6 +173,89 @@ $(document).ready(function(){
         return Math.floor(num * 100) / 100;
     }
 
+    function generateBills(rate){
+        // clear the bills
+        $("#bills").html("");
+
+        $("#bills").append("<h3>$" + Math.floor(rate) + "/hour</h3>")
+
+        if(rate > 2000){
+            return;
+        }
+
+        // add the number of images for the hourly rate.
+        for(var i = 0; i < Math.floor(rate); i++){
+            var img = $('<img src="dollar.jpg" width="100">');
+            img.appendTo('#bills');
+        }
+    }
+
+    function generateDays(days){
+        // clear the days
+        $("#days").html("");
+
+        var days = Math.floor(days);
+
+        $("#days").append("<h3>" + days + " Days!</h3>");
+
+        if(days > 1000){
+            return;
+        }
+
+        // add the number of images for the hourly rate.
+        for(var i = 0; i < days; i++){
+            var img = $('<img src="day.png" width="40">');
+            img.appendTo('#days');
+        }
+    }
+
+    function generateHours(hours){
+
+        // clear the hours
+        $("#hours").html("");
+
+        if(hours > 24){
+            return;
+        }
+
+        var hours = Math.floor(hours);
+
+        $("#hours").append("<h3>Just " + hours + " Hours!</h3>");
+
+
+
+        // add the number of images for the hourly rate.
+        for(var i = 0; i < hours; i++){
+            var img = $('<img src="hour.png" width="40">');
+            img.appendTo('#hours');
+        }
+    }
+
+    function generateMins(hours){
+
+        // clear the hours
+        $("#minutes").html("");
+
+        if(hours > 1){
+            return;
+        }
+
+        var minutes = 60 * hours;
+
+        minutes = Math.floor(minutes);
+
+        $("#minutes").append("<h3>Just " + minutes + " Minutes!</h3>");
+
+
+
+        // add the number of images for the hourly rate.
+        for(var i = 0; i < minutes; i++){
+            var img = $('<img src="minute.jpg" width="40">');
+            img.appendTo('#minutes');
+        }
+    }
+
+
     function compute(income){
         // Default to 100 percent if less than all cutoffs.
         var percent = "0.0000006";
@@ -209,6 +292,7 @@ $(document).ready(function(){
 
         var hourlyRate = income / WORKING_HOURS;
         $("#hourly").text(toMoney(hourlyRate));
+        generateBills(hourlyRate);
 
         $("#median").text(toMoney(MEDIAN_INCOME, true));
         var medianRate = toMoney(MEDIAN_INCOME / WORKING_HOURS);
@@ -219,6 +303,11 @@ $(document).ready(function(){
 
         var hoursToMakeMedian = WORKING_HOURS / medianMultiple;
         var daysToMakeMedian = hoursToMakeMedian / HOURS_PER_DAY;
+
+        generateDays(daysToMakeMedian);
+        generateHours(hoursToMakeMedian);
+        generateMins(hoursToMakeMedian);
+
         var yearsToMakeMedian = 1 / medianMultiple;
         $("#medianhours").text(hoursToMakeMedian.round(4));
         $("#mediandays").text(daysToMakeMedian.round(4));

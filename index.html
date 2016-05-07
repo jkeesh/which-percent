@@ -47,14 +47,31 @@
         <br><br>
         <div>That is an hourly rate of <span id="hourly"></span> per hour.
         </div>
+
+        <div id="bills">
+
+        </div>
+
         <br>
         <div>The median income is <span id="median"></span> which is an hourly rate of
         <span id="medianrate"></span>. 
+
+
 
         <br><br>
         Your income is <span id="medianmultiple"></span> times
         the median. It would take you <span id="medianhours"></span> hours (<span id="mediandays"></span> work days
         or <span id="medianyears"></span> years) to make the median annual income.</div>
+
+        <div id="days">
+
+        </div>
+
+        <div id="hours">
+        </div>
+
+        <div id="minutes">
+        </div>
 
         <br>
         <div>Try typing in <span id="poverty"></span>. That is the poverty line.
@@ -64,14 +81,12 @@
 
         <br>
         <div>Try typing in <span id="billion"></span> (that's a billion).</div>
-        <br>
-        <div>I would like to provide some perspective and insight into the actual numbers around income inequality
-        and a way to visualize that. It is difficult to grasp the orders of magnitude.</div>
+
 
         <br>
-        <div>This is the income distribution in the US.</div>
+        <div>This is the actual income distribution in the US.</div>
 
-        <div id="myDiv7" class="graph" style="width: 450px; height: 400px;">
+        <div id="myDiv7" class="graph" style="width: 950px; height: 400px;">
             <!-- Plotly chart will be drawn inside this DIV -->
         </div>
         <p class="normal">This is a graph of the actual income distribution in the US. This is split into 35,000 buckets of $100,000, which is what you need to get the full scale of the range. As you can see, the small sliver at 0 is 99.9999% of the US wage earners.</p>
@@ -186,7 +201,7 @@ Income Data from the US Census, Female data
 }
 
 body{
-    width: 950px;
+    width: 1000px;
     margin: auto;
     margin-top: 100px;
 }
@@ -203,7 +218,7 @@ body{
 
 #left{
     float: left;
-    width: 950px;
+    width: 1000px;
 }
 
 #right{
