@@ -1,84 +1,114 @@
 
 <body>
 
-<div id="left">
+<div id="container">
 
-    Enter your annual income:
-    <br>
-    <input placeholder="Enter income" id="income" type="text" value=""></input>
+    <div id="left">
 
-    <div>You are the
-    <span id="percentile">X</span>
-    percent.</div>
+        Enter your annual income:
+        <br>
+        <input placeholder="Enter income" id="income" type="text" value=""></input>
 
-    <br>
+        <div>You are the
+        <span id="percentile">X</span>
+        percent.</div>
 
-    <div id="myDiv" class="graph" style="width: 480px; height: 400px;">
+        <br>
+
+
+
+
+
+
+
+
+
+    </div>
+
+    <div id="right">
+        <div>Ok, so say you make <span id="incomeText"></span>.</div>
+        <br>
+
+        <div>You are among the top
+        <span id="groupsize">_</span> out of
+        <span id="popsize"></span> American wage earners.
+        </div>
+
+        <br>
+        <div class="percentbox">
+            <div id="percentbar"></div>
+        </div>
+
+        <br>
+        <div>There are 
+        <span id="restsize">_</span> people who make less than you.
+        </div>
+
+        <br>
+        <div class="percentbox">
+            <div id="percentbar2"></div>
+        </div>
+
+        <br>
+        <div>That is an hourly rate of <span id="hourly"></span> per hour.
+        </div>
+        <br>
+        <div>The median income is <span id="median"></span> which is an hourly rate of
+        <span id="medianrate"></span>. Your income is <span id="medianmultiple"></span> times
+        the median. It would take you <span id="medianhours"></span> hours (<span id="mediandays"></span> work days
+        or <span id="medianyears"></span> years) to make the median annual income.</div>
+
+        <br>
+        <div>Try typing in <span id="poverty"></span>. That is the poverty line.
+        <br>
+
+        <div>Try typing in <span id="elite"></span> (that's a million).</div>
+
+        <br>
+        <div>Try typing in <span id="billion"></span> (that's a billion).</div>
+
+        <div>I would like to provide some perspective and insight into the actual numbers around income inequality
+        and a way to visualize that. It is difficult to grasp the orders of magnitude.</div>
+
+        <br>
+        <div>This is the income distribution in the US.</div>
+
+    </div>
+</div>
+
+<div class="clear"></div>
+
+<br>
+
+<div id="moregraphs">
+    <div id="myDiv" class="graph" style="width: 950px; height: 400px;">
         <!-- Plotly chart will be drawn inside this DIV -->
     </div>
     <p class="normal">Note that the x-axis in the Social Security Administration buckets are deceptive because
     they do not use uniform scaling, so greatly misrepresent orders of magnitude.</p>
 
-    <div id="myDiv2" class="graph" style="width: 480px; height: 400px;">
+    <div id="myDiv3" class="graph" style="width: 950px; height: 400px;">
         <!-- Plotly chart will be drawn inside this DIV -->
     </div>
+    <p class="normal">This graph has uniform scaling. Each bar represents the people up with incomes in the $10k bucket range up to the current x-axis label. The last bucket is the number of people with incomes $200,000 and greater.</p>
 
-    <br>
 
-    <div id="myDiv3" class="graph" style="width: 480px; height: 400px;">
+    <div id="myDiv2" class="graph" style="width: 950px; height: 400px;">
         <!-- Plotly chart will be drawn inside this DIV -->
     </div>
+    <p class="normal">This graph has uniform scaling. Each bar represents the people up with incomes in the $50k bucket range up to the current x-axis label. The last bucket is the number of people with incomes $250,000 and greater.</p>
 
-</div>
-
-<div id="right">
-    <div>Ok, so say you make <span id="incomeText"></span>.</div>
     <br>
 
-    <div>You are among the top
-    <span id="groupsize">_</span> out of
-    <span id="popsize"></span> American wage earners.
+    <div id="myDiv5" class="graph" style="width: 950px; height: 400px;">
+        <!-- Plotly chart will be drawn inside this DIV -->
     </div>
+    <p class="normal">Each bar represents the people up with incomes in the $100k bucket range up to the current x-axis label. The last bucket is the number of people with incomes $500,000 and greater. 92% of the wage earners are $100k or less.</p>
 
-    <br>
-    <div class="percentbox">
-        <div id="percentbar"></div>
+    <div id="myDiv4" class="graph" style="width: 950px; height: 400px;">
+        <!-- Plotly chart will be drawn inside this DIV -->
     </div>
-
-    <br>
-    <div>There are 
-    <span id="restsize">_</span> people who make less than you.
-    </div>
-
-    <br>
-    <div class="percentbox">
-        <div id="percentbar2"></div>
-    </div>
-
-    <br>
-    <div>That is an hourly rate of <span id="hourly"></span> per hour.
-    </div>
-    <br>
-    <div>The median income is <span id="median"></span> which is an hourly rate of
-    <span id="medianrate"></span>. Your income is <span id="medianmultiple"></span> times
-    the median. It would take you <span id="medianhours"></span> hours (<span id="mediandays"></span> work days
-    or <span id="medianyears"></span> years) to make the median annual income.</div>
-
-    <br>
-    <div>Try typing in <span id="poverty"></span>. That is the poverty line.
-    <br>
-
-    <div>Try typing in <span id="elite"></span> (that's a million).</div>
-
-    <br>
-    <div>Try typing in <span id="billion"></span> (that's a billion).</div>
-
-    <div>I would like to provide some perspective and insight into the actual numbers around income inequality
-    and a way to visualize that. It is difficult to grasp the orders of magnitude.</div>
-
-    <br>
-    <div>This is the income distribution in the US.</div>
-
+    <p class="normal">The one thin bar on the left is almost every single American. Each bar represents the people up with incomes in the $100k bucket range up to the current x-axis label. This is the full range and shows you how far away the elite are, which is usually not properly visualized in truncated data-sets. This also doesnt show the full range. This only goes until $50 million, and the graph should really be 20 times longer.</p>
 </div>
 
 </body>
@@ -113,6 +143,10 @@ body{
 
 p.normal{
     font-size: 12px;
+}
+
+.clear{
+    clear: both;
 }
 
 input{

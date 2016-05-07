@@ -62,21 +62,15 @@ function toMoney(n, short){
 // Return the count of people in this range. How many people
 // in the data array are between start and end
 function sumFromTo(data, start, end){
-    console.log("SUM FOR start=" + start + " to end=" + end);
     var sum = 0;
     for(var i = 0; i < data.length; i++){
         var cur = data[i];
         var min = cur[MIN_INDEX];
         var max = cur[MAX_INDEX];
-        var str= "min= " + min + " max=" + max;
 
-        if(start < min && max < end){
+        if(start <= min && max < end){
             sum += cur[COUNTS_INDEX];
-            str += "COUNT";
         }
-
-        console.log(str);
-
     }
     return sum;
 }
@@ -108,10 +102,16 @@ function createGraphArrays(bucketSize, numBuckets){
         graphY.push(sumFromTo(data, min, cur));
     }
 
+    var last = (numBuckets - 1) * bucketSize;
+
+    var rest = sumFromTo(data, last, 1000000000);
+    graphX.push(last + bucketSize);
+    graphY.push(rest);
+
     return {
         graphX: graphX,
         graphY: graphY
-    }
+    };
 }
 
 $(document).ready(function(){
@@ -127,15 +127,11 @@ $(document).ready(function(){
 
     for(var i = 0; i < data.length; i++){
         var cur = data[i];
-        console.log(cur);
         var range = cur[RANGE_INDEX].replace(/,/g, '');
         var splits = range.split("-");
-        console.log(splits);
 
         var min = parseFloat(splits[0]);
         var max = parseFloat(splits[1]);
-        console.log(min)
-        console.log(max);
 
         cur.push(min);
         cur.push(max);
@@ -143,7 +139,15 @@ $(document).ready(function(){
         var count = cur[COUNTS_INDEX].replace(/,/g, '');
         cur[COUNTS_INDEX] = parseInt(count);
 
-        graphX.push("< " + max.round(0));
+        if(isNaN(max)){
+            max = ">= 50 M";
+        }else{
+            max = "< " + max.round(0);
+        }
+
+        graphX.push(max);
+
+
         graphY.push(cur[COUNTS_INDEX]);
 
         var cleanPercent = parseFloat(cur[PERCENT_INDEX].replace('%', ''));
@@ -154,8 +158,6 @@ $(document).ready(function(){
 
     }
 
-    // Graph of 5 50k buckets
-    var graphObj_50k = createGraphArrays(50000, 5);
 
 
     // Set the population
@@ -248,6 +250,9 @@ $(document).ready(function(){
       title: 'US Income Distribution ($50k buckets)'
     };
 
+    // Graph of 6 50k buckets
+    var graphObj_50k = createGraphArrays(50000, 6);
+
     var graph2 = [{
       x: graphObj_50k.graphX,
       y: graphObj_50k.graphY,
@@ -258,7 +263,7 @@ $(document).ready(function(){
 
 
     // 10k bucket graphs
-    var graphObj_10k = createGraphArrays(10000, 25);
+    var graphObj_10k = createGraphArrays(10000, 21);
 
     var layout3 = {
       title: 'US Income Distribution ($10k buckets)'
@@ -271,4 +276,80 @@ $(document).ready(function(){
     }];
 
     Plotly.newPlot('myDiv3', graph3, layout3);
+
+
+    // Graph of 50k buckets, all the way
+    var graphObj_100k2 = createGraphArrays(100000, 500);
+
+    // var x100 = [100000, 200000, 300000, 400000, 500000];
+
+     x100 = [];
+    for(var i = 0; i < 500; i++){
+        x100.push(i * 100000);
+    }
+
+     y100 = [
+        145130107,
+        10161656,
+        1605002,
+        553507,
+        260043
+    ];
+
+    var start = y100.length;
+    for(var i = 0; i < 500 - start; i++){
+        y100.push(0);
+    }
+
+    // 500,000.00 — 999,999.99 345,935
+    // 1,000,000.00 — 1,499,999.99 65,548
+    // 1,500,000.00 — 1,999,999.99 24,140
+    // 2,000,000.00 — 2,499,999.99 12,137
+    // 2,500,000.00 — 2,999,999.99 6,871
+    // 3,000,000.00 — 3,499,999.99 4,799
+    // 3,500,000.00 — 3,999,999.99 3,258
+    // 4,000,000.00 — 4,499,999.99 2,353
+    // 4,500,000.00 — 4,999,999.99 1,822
+    // 5,000,000.00 — 9,999,999.99 6,468
+    // 10,000,000.00 — 19,999,999.99   2,230
+    // 20,000,000.00 — 49,999,999.99   776
+    // 50,000,000.00 and over  134
+    y100[10] = 345935;
+    y100[15] = 65548;
+    y100[20] = 24140;
+    y100[25] = 12137;
+    y100[30] = 6871;
+    y100[35] = 4799;
+    y100[40] = 3258;
+    y100[45] = 2353;
+    y100[50] = 1822;
+    y100[100] = 6468;
+    y100[200] = 2230;
+    y100[300] = 776; // This is a 30M range
+    y100[499] = 134;
+
+    var graph4 = [{
+      x: x100, //graphObj_100k2.graphX,
+      y: y100, //graphObj_100k2.graphY,
+      type: 'bar'
+    }];
+
+
+    Plotly.newPlot('myDiv4', graph4, {
+        title: 'US Income Distribution ($100k buckets, full)'
+    });
+
+    // Graph of 100k buckets, truncated
+    var graphObj_100k = createGraphArrays(100000, 6);
+
+    var graph5 = [{
+      x: graphObj_100k.graphX,
+      y: graphObj_100k.graphY,
+      type: 'bar'
+    }];
+
+    Plotly.newPlot('myDiv5', graph5, {
+        title: 'US Income Distribution ($100k buckets)'
+    });
+
 });
