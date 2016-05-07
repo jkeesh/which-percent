@@ -81,12 +81,44 @@ function sumFromTo(data, start, end){
     return sum;
 }
 
+/*
+Return an object of the format
+
+{
+    graphX: [1, 2, 3...],
+    graphY: [1, 2, 3...]
+}
+
+to be used in a graph. Process the data array and return an object with
+the X axis and Y axis graph arrays based on the number of people within the
+income range on the x axis.
+
+bucketSize is the size of the buckets, for example 50000 would do 50000 buckets
+numBuckets shows how many buckets you want to calculate
+
+*/
+function createGraphArrays(bucketSize, numBuckets){
+    var graphX = [];
+    var graphY = [];
+    for(var i = 1; i < numBuckets; i++){
+        var cur = i * bucketSize;
+        graphX.push(cur);
+
+        var min = (i - 1) * bucketSize;
+        graphY.push(sumFromTo(data, min, cur));
+    }
+
+    return {
+        graphX: graphX,
+        graphY: graphY
+    }
+}
+
 $(document).ready(function(){
 
     data = Papa.parse(
         $("#datatable").html()
     ).data;
-    console.log(data);
 
     // simple plot
     var graphX = [];
@@ -122,19 +154,8 @@ $(document).ready(function(){
 
     }
 
-
-
-    // 50k bucket plot
-     graphX2 = [];
-     graphY2 = [];
-    for(var i = 1; i < 5; i++){
-        var cur = i * 50000;
-        console.log(cur);
-        graphX2.push(cur);
-
-        var min = (i - 1) * 50000;
-        graphY2.push(sumFromTo(data, min, cur));
-    }
+    // Graph of 5 50k buckets
+    var graphObj_50k = createGraphArrays(50000, 5);
 
 
     // Set the population
@@ -228,10 +249,26 @@ $(document).ready(function(){
     };
 
     var graph2 = [{
-      x: graphX2,
-      y: graphY2,
+      x: graphObj_50k.graphX,
+      y: graphObj_50k.graphY,
       type: 'bar'
     }];
 
     Plotly.newPlot('myDiv2', graph2, layout2);
+
+
+    // 10k bucket graphs
+    var graphObj_10k = createGraphArrays(10000, 25);
+
+    var layout3 = {
+      title: 'US Income Distribution ($10k buckets)'
+    };
+
+    var graph3 = [{
+      x: graphObj_10k.graphX,
+      y: graphObj_10k.graphY,
+      type: 'bar'
+    }];
+
+    Plotly.newPlot('myDiv3', graph3, layout3);
 });
