@@ -11,6 +11,9 @@ var WORKING_HOURS = HOURS_PER_DAY * DAYS_PER_WEEK * WEEKS_PER_YEAR;
 // Median income
 var MEDIAN_INCOME = 28851;
 
+// Fed min wage
+var FED_MIN_WAGE = 7.25;
+
 // This is the starting income for the visualization
 var DEFAULT_INCOME = MEDIAN_INCOME;
 
@@ -354,6 +357,17 @@ $(document).ready(function(){
         $("#mediandays").text(daysToMakeMedian.round(4));
         $("#medianyears").text(yearsToMakeMedian.round(4));
 
+
+        var fedMinIncome = FED_MIN_WAGE * WORKING_HOURS;
+        var fedMinMultiple = income / fedMinIncome;
+        var fedMinHours = income / FED_MIN_WAGE;
+        var fedMinDays = fedMinHours / 8;
+        var fedMinYearsToGet = fedMinDays / (DAYS_PER_WEEK * WEEKS_PER_YEAR);
+        $("#fedminmultiple").text(fedMinMultiple.round(4));
+        $("#fedminhours").text(fedMinHours.round(2));
+        $("#fedmindays").text(fedMinDays.round(2));
+        $("#fedminyears").text(fedMinYearsToGet.round(4));
+
         $("#poverty").text(toMoney(POVERTY_INCOME, true));
         $("#elite").text(toMoney(ELITE_INCOME, true));
         $("#billion").text(toMoney(BILLION_INCOME, true));
@@ -365,6 +379,15 @@ $(document).ready(function(){
         val = val.replace(/,/g, '');
         val = val.replace('$', '');
 
+        var amount = parseInt(val) || 0;
+        compute(amount);
+    });
+
+    // quickly insert a value
+    $(".quick-click").click(function(e){
+        var val = $(this).attr('data-val');
+        console.log(val);
+        $("#income").val(val);
         var amount = parseInt(val) || 0;
         compute(amount);
     });
