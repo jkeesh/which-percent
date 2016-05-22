@@ -173,6 +173,45 @@ $(document).ready(function(){
         return Math.floor(num * 100) / 100;
     }
 
+    function generatePeople(percent){
+        // clear the bills
+        $("#people").html("");
+
+        var dark = Math.floor(percent);
+        var light = 100 - dark;
+
+        var count = 0;
+
+        if(percent >= 0.1 && percent < 1){
+            var img = $('<img src="stick_figure_partial.png" width="25">');
+            img.appendTo('#people');
+            light--;
+            count++;
+        }
+
+        // add the number of images for the hourly rate.
+        for(var i = 0; i < dark; i++){
+            count++;
+            var img = $('<img src="stick_figure_black.png" width="25">');
+            img.appendTo('#people');
+
+            if(count % 25 == 0){
+                $("#people").append("<br>");
+            }
+        }
+
+        for(var i = 0; i < light; i++){
+            count++
+            var img = $('<img src="stick_figure_white.png" width="25">');
+            img.appendTo('#people');
+
+            if(count % 25 == 0){
+                $("#people").append("<br>");
+            }
+
+        }
+    }
+
     function generateBills(rate){
         // clear the bills
         $("#bills").html("");
@@ -285,6 +324,8 @@ $(document).ready(function(){
         $("#percentbar").css('width', percent + '%');
 
         $("#percentbar2").css('width', (100 - percent) + '%');
+
+        generatePeople(percent);
 
         // Set the size of the rest of the population
         var rest = english(POPULATION - groupsize);
