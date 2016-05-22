@@ -363,6 +363,7 @@ $(document).ready(function(){
     $("#income").keyup(function(e){
         var val = $(this).val();
         val = val.replace(/,/g, '');
+        val = val.replace('$', '');
 
         var amount = parseInt(val) || 0;
         compute(amount);
